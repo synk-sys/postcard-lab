@@ -376,19 +376,32 @@
       text-align: center;
     }
 
+    /* ── POSTCARD PREVIEW (realistic) ── */
     .postcard-preview {
-      background: #fff;
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 6px 28px var(--shadow);
+      background: #fffef9;
+      border: 1px solid #c8b89a;
+      border-radius: 4px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.18), 0 1px 3px rgba(0,0,0,0.1);
       aspect-ratio: 6/4;
       position: relative;
       display: flex;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* thin decorative border inside the card */
+    .postcard-preview::before {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border: 0.5px solid #d9c9b0;
+      border-radius: 2px;
+      pointer-events: none;
+      z-index: 2;
     }
 
     .preview-left {
-      flex: 0 0 55%;
+      flex: 0 0 52%;
       background: #e8e0d0;
       overflow: hidden;
       position: relative;
@@ -404,61 +417,138 @@
     }
 
     .preview-placeholder-img {
-      font-size: 3rem;
-      color: var(--border);
+      font-size: 2.5rem;
+      color: #b0a090;
     }
 
+    /* right half */
     .preview-right {
       flex: 1;
-      padding: 0.75rem;
       display: flex;
       flex-direction: column;
-      border-left: 1px solid var(--border);
+      border-left: 1.5px solid #b0a090;
       position: relative;
-    }
-
-    .preview-message {
-      font-size: 0.6rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-      flex: 1;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 0.5rem;
-      margin-bottom: 0.5rem;
-      font-style: italic;
-      word-break: break-word;
       overflow: hidden;
     }
 
-    .preview-address-block {
-      font-size: 0.55rem;
-      color: var(--text);
-      line-height: 1.6;
-    }
-
-    .preview-stamp {
-      position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
-      width: 22px;
-      height: 28px;
-      background: var(--brown);
-      border-radius: 2px;
+    /* POST CARD header bar */
+    .preview-postcard-header {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.5rem;
-      color: #fff;
-      font-weight: 700;
+      padding: 3px 6px;
+      border-bottom: 1px solid #d9c9b0;
+      background: #faf6ee;
     }
 
-    .preview-divider {
-      position: absolute;
-      top: 0; bottom: 0;
-      left: 55%;
-      width: 1px;
-      background: var(--border);
+    .preview-postcard-header span {
+      font-size: 0.42rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #8a7060;
     }
+
+    /* body: message left, address right, divided by vertical line */
+    .preview-body {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .preview-message-col {
+      flex: 1;
+      padding: 5px 5px 5px 6px;
+      border-right: 1px solid #d9c9b0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    /* ruled lines behind message text */
+    .preview-message-col::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+    }
+
+    .preview-message {
+      font-size: 0.52rem;
+      color: #4a3828;
+      line-height: 1.7;
+      font-family: 'Georgia', serif;
+      word-break: break-word;
+      overflow: hidden;
+      flex: 1;
+      position: relative;
+      /* ruled lines */
+      background-image: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent calc(1.7em - 1px),
+        #e8ddd0 calc(1.7em - 1px),
+        #e8ddd0 1.7em
+      );
+      background-size: 100% 1.7em;
+      background-position: 0 0;
+    }
+
+    /* address column */
+    .preview-address-col {
+      width: 45%;
+      padding: 4px 5px 4px 4px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* stamp */
+    .preview-stamp {
+      align-self: flex-end;
+      width: 22px;
+      height: 28px;
+      border: 1.5px solid #a07840;
+      border-radius: 1px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.38rem;
+      color: #a07840;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      background: #fff8ee;
+      position: relative;
+      box-shadow: inset 0 0 0 1px #e8d4b0;
+    }
+
+    .preview-stamp::before {
+      content: '🍁';
+      font-size: 0.7rem;
+      display: block;
+      line-height: 1;
+    }
+
+    .preview-stamp-label {
+      font-size: 0.3rem;
+      color: #a07840;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      margin-top: 1px;
+    }
+
+    /* address lines */
+    .preview-address-block {
+      font-size: 0.46rem;
+      color: #2c1a0e;
+      line-height: 1.65;
+      font-family: 'Inter', sans-serif;
+      margin-top: 4px;
+    }
+
+    .preview-divider { display: none; }
 
     .price-badge {
       background: var(--brown);
@@ -794,15 +884,30 @@
       <p class="preview-label">Live Preview</p>
 
       <div class="postcard-preview">
+        <!-- Left: photo -->
         <div class="preview-left" id="previewLeft">
           <canvas id="previewCanvas" width="420" height="280" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;" aria-label="Preview photo"></canvas>
           <span class="preview-placeholder-img" id="previewPlaceholder" aria-label="Photo placeholder">🖼️</span>
         </div>
+        <!-- Right: postcard back -->
         <div class="preview-right">
-          <div class="preview-stamp" aria-label="Stamp">CA</div>
-          <p class="preview-message" id="previewMessage"><em style="color:var(--border);">Your message will appear here…</em></p>
-          <div class="preview-address-block" id="previewAddress">
-            <span style="color:var(--border);">Recipient address</span>
+          <div class="preview-postcard-header">
+            <span>Post Card</span>
+          </div>
+          <div class="preview-body">
+            <!-- Message column -->
+            <div class="preview-message-col">
+              <p class="preview-message" id="previewMessage" style="color:#b0a090;font-style:italic;">Your message…</p>
+            </div>
+            <!-- Address column -->
+            <div class="preview-address-col">
+              <div class="preview-stamp" aria-label="Stamp">
+                <span class="preview-stamp-label">CANADA</span>
+              </div>
+              <div class="preview-address-block" id="previewAddress">
+                <span style="color:#b0a090;">Recipient address</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1026,8 +1131,15 @@
       msgCounter.classList.toggle('warn', len > 300 && len <= max);
       msgCounter.classList.toggle('over', len > max);
       state.message = messageArea.value;
-      previewMsg.textContent = state.message || '';
-      if (!state.message) previewMsg.innerHTML = '<em style="color:var(--border);">Your message will appear here…</em>';
+      if (state.message) {
+        previewMsg.style.color = '#4a3828';
+        previewMsg.style.fontStyle = 'normal';
+        previewMsg.textContent = state.message;
+      } else {
+        previewMsg.style.color = '#b0a090';
+        previewMsg.style.fontStyle = 'italic';
+        previewMsg.textContent = 'Your message…';
+      }
     });
 
     document.getElementById('backStep2').addEventListener('click', () => goToStep(1));
