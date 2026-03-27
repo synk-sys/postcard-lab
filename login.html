@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — Postcard Lab</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f0e8;
+      --brown: #704214;
+      --brown-dark: #4e2d0c;
+      --brown-light: #8a5224;
+      --border: #d9cdb8;
+      --text: #2c1a0e;
+      --text-muted: #7a6050;
+      --error: #c0392b;
+      --error-bg: #fff0ee;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--brown);
+      text-decoration: none;
+      margin-bottom: 2rem;
+      display: block;
+      text-align: center;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 8px 32px rgba(112,66,20,0.10);
+    }
+
+    .card h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+      color: var(--text);
+    }
+
+    .card p.sub {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+
+    .field {
+      margin-bottom: 1.1rem;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: var(--text);
+    }
+
+    .field input {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text);
+      background: #fdfaf4;
+      transition: border-color 0.15s;
+      outline: none;
+    }
+
+    .field input:focus {
+      border-color: var(--brown);
+      background: #fff;
+    }
+
+    .field input.invalid {
+      border-color: var(--error);
+      background: var(--error-bg);
+    }
+
+    .password-wrap {
+      position: relative;
+    }
+
+    .password-wrap input {
+      padding-right: 2.8rem;
+    }
+
+    .toggle-pw {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      color: var(--text-muted);
+      line-height: 1;
+      padding: 0;
+    }
+
+    .error-banner {
+      display: none;
+      background: var(--error-bg);
+      border: 1px solid #f5c6c0;
+      color: var(--error);
+      border-radius: 8px;
+      padding: 0.65rem 0.85rem;
+      font-size: 0.82rem;
+      margin-bottom: 1.1rem;
+      font-weight: 500;
+    }
+
+    .error-banner.visible { display: block; }
+
+    .btn-submit {
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--brown);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      margin-top: 0.5rem;
+    }
+
+    .btn-submit:hover { background: var(--brown-dark); }
+    .btn-submit:active { transform: scale(0.98); }
+    .btn-submit:disabled { background: var(--border); cursor: not-allowed; }
+
+    .hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 1.25rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    .back-link:hover { color: var(--brown); }
+
+    .spinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="logo">📮 Postcard Lab</a>
+
+  <div class="card">
+    <h1>Sign in to your account</h1>
+    <p class="sub">Access your postcard dashboard</p>
+
+    <div class="error-banner" id="errorBanner">Incorrect email or password. Please try again.</div>
+
+    <form id="loginForm" novalidate>
+      <div class="field">
+        <label for="email">Email address</label>
+        <input type="email" id="email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="password-wrap">
+          <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
+          <button type="button" class="toggle-pw" id="togglePw" aria-label="Show password">👁</button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">
+        <span id="btnLabel">Sign In →</span>
+        <div class="spinner" id="spinner"></div>
+      </button>
+    </form>
+
+    <p class="hint">Demo credentials: <strong>admin@postcardlab.ca</strong> / <strong>postcard123</strong></p>
+    <a href="index.html" class="back-link">← Back to home</a>
+  </div>
+
+  <script>
+    // Redirect if already logged in
+    if (sessionStorage.getItem('pl_auth') === '1') {
+      window.location.replace('dashboard.html');
+    }
+
+    const DEMO_EMAIL    = 'admin@postcardlab.ca';
+    const DEMO_PASSWORD = 'postcard123';
+
+    const form       = document.getElementById('loginForm');
+    const emailEl    = document.getElementById('email');
+    const passwordEl = document.getElementById('password');
+    const errorBanner = document.getElementById('errorBanner');
+    const submitBtn  = document.getElementById('submitBtn');
+    const btnLabel   = document.getElementById('btnLabel');
+    const spinner    = document.getElementById('spinner');
+    const togglePw   = document.getElementById('togglePw');
+
+    togglePw.addEventListener('click', () => {
+      const show = passwordEl.type === 'password';
+      passwordEl.type = show ? 'text' : 'password';
+      togglePw.textContent = show ? '🙈' : '👁';
+    });
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      errorBanner.classList.remove('visible');
+      emailEl.classList.remove('invalid');
+      passwordEl.classList.remove('invalid');
+
+      const email = emailEl.value.trim();
+      const pass  = passwordEl.value;
+
+      let valid = true;
+      if (!email) { emailEl.classList.add('invalid'); valid = false; }
+      if (!pass)  { passwordEl.classList.add('invalid'); valid = false; }
+      if (!valid) return;
+
+      // Show loading
+      btnLabel.style.display = 'none';
+      spinner.style.display  = 'block';
+      submitBtn.disabled = true;
+
+      // Simulate network delay
+      await new Promise(r => setTimeout(r, 900));
+
+      if (email === DEMO_EMAIL && pass === DEMO_PASSWORD) {
+        sessionStorage.setItem('pl_auth', '1');
+        sessionStorage.setItem('pl_user', email);
+        window.location.replace('dashboard.html');
+      } else {
+        btnLabel.style.display = 'block';
+        spinner.style.display  = 'none';
+        submitBtn.disabled = false;
+        emailEl.classList.add('invalid');
+        passwordEl.classList.add('invalid');
+        errorBanner.classList.add('visible');
+        passwordEl.value = '';
+        passwordEl.focus();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -6,6 +6,12 @@
   <title>Dashboard — Postcard Lab</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Auth guard — runs before page renders
+    if (sessionStorage.getItem('pl_auth') !== '1') {
+      window.location.replace('login.html');
+    }
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -682,7 +688,7 @@
     <div class="avatar">MK</div>
     <div class="sidebar-footer-text">
       <div class="sidebar-footer-name">My Account</div>
-      <a class="sidebar-footer-logout" href="#">Log out</a>
+      <a class="sidebar-footer-logout" href="#" id="logoutBtn">Log out</a>
     </div>
   </div>
 </aside>
@@ -1222,6 +1228,14 @@ provinces.forEach(p => {
 ──────────────────────────────────────────────────────────────── */
 buildRows(postcards, 'dashTable');
 buildRows(postcards, 'pcTable');
+
+// Logout
+document.getElementById('logoutBtn').addEventListener('click', e => {
+  e.preventDefault();
+  sessionStorage.removeItem('pl_auth');
+  sessionStorage.removeItem('pl_user');
+  window.location.replace('login.html');
+});
 </script>
 </body>
 </html>
