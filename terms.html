@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms &amp; Privacy — Postcard Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f0e8;
+      --brown: #704214;
+      --brown-dark: #4e2d0c;
+      --cream: #fdfaf4;
+      --text: #2c1a0e;
+      --text-muted: #7a6050;
+      --border: #d9cdb8;
+      --shadow: rgba(112, 66, 20, 0.12);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(245, 240, 232, 0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.3rem;
+      color: var(--brown);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .btn-track {
+      background: var(--brown);
+      color: #fff;
+      text-decoration: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 999px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .btn-track:hover { background: var(--brown-dark); }
+
+    /* ── CONTENT ── */
+    main {
+      flex: 1;
+      padding: 96px 2rem 4rem;
+      max-width: 760px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .page-header {
+      margin-bottom: 2.5rem;
+    }
+
+    .page-header h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 2.5rem;
+      color: var(--brown);
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+
+    .page-header p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* ── SECTIONS ── */
+    .section-card {
+      background: var(--cream);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 20px var(--shadow);
+    }
+
+    .section-card h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.5rem;
+      color: var(--brown);
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-card h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 1.25rem 0 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .section-card p {
+      color: var(--text);
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+      line-height: 1.75;
+    }
+
+    .section-card ul {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-card ul li {
+      font-size: 0.95rem;
+      padding: 0.35rem 0 0.35rem 1.5rem;
+      position: relative;
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    .section-card ul li::before {
+      content: '·';
+      position: absolute;
+      left: 0.4rem;
+      color: var(--brown);
+      font-weight: 700;
+      font-size: 1.1rem;
+      line-height: 1.5;
+    }
+
+    .highlight-box {
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    .highlight-box strong { color: var(--brown); }
+
+    .badge {
+      display: inline-block;
+      background: var(--brown);
+      color: #fff;
+      border-radius: 999px;
+      padding: 0.25rem 0.9rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      letter-spacing: 0.03em;
+    }
+
+    /* ── TABLE OF CONTENTS ── */
+    .toc {
+      background: var(--cream);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .toc p {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 0.6rem;
+    }
+
+    .toc ol {
+      padding-left: 1.2rem;
+    }
+    .toc ol li {
+      margin-bottom: 0.3rem;
+    }
+    .toc a {
+      color: var(--brown);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .toc a:hover { text-decoration: underline; }
+
+    /* ── CONTACT ── */
+    .contact-block {
+      text-align: center;
+      background: var(--cream);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 20px var(--shadow);
+    }
+
+    .contact-block h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.5rem;
+      color: var(--brown);
+      margin-bottom: 0.5rem;
+    }
+
+    .contact-block p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+
+    .contact-block a {
+      display: inline-block;
+      background: var(--brown);
+      color: #fff;
+      text-decoration: none;
+      padding: 0.75rem 1.75rem;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .contact-block a:hover { background: var(--brown-dark); transform: translateY(-1px); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+    footer a { color: var(--brown); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 500px) {
+      header { padding: 0 1rem; }
+      main { padding: 88px 1rem 3rem; }
+      .section-card { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <a href="/postcard-app/index.html" class="logo">Postcard Lab 💌</a>
+    <a href="/postcard-app/track.html" class="btn-track">Track Postcard</a>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <h1>Terms &amp; Privacy</h1>
+      <p>Last updated: March 2026 · Postcard Lab</p>
+    </div>
+
+    <!-- TABLE OF CONTENTS -->
+    <div class="toc">
+      <p>On this page</p>
+      <ol>
+        <li><a href="#privacy">Privacy Policy</a></li>
+        <li><a href="#tos">Terms of Service</a></li>
+        <li><a href="#pricing">Pricing &amp; Postage</a></li>
+        <li><a href="#delivery">Delivery</a></li>
+        <li><a href="#refunds">Refunds &amp; Cancellations</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+      </ol>
+    </div>
+
+    <!-- PRIVACY POLICY -->
+    <div class="section-card" id="privacy">
+      <span class="badge">Privacy Policy</span>
+      <h2>Privacy Policy</h2>
+
+      <p>At Postcard Lab, we take your privacy seriously. This policy explains what data we collect, how we use it, and who we share it with.</p>
+
+      <h3>Information We Collect</h3>
+      <p>When you use our service, we collect the following:</p>
+      <ul>
+        <li><strong>Photos</strong> — the image you upload for your postcard.</li>
+        <li><strong>Messages</strong> — the text you write to appear on the back of your postcard.</li>
+        <li><strong>Recipient address</strong> — the name and mailing address of the person you're sending to.</li>
+        <li><strong>Your name and email address</strong> — so we can send you a confirmation and tracking information.</li>
+        <li><strong>Payment information</strong> — processed securely via Stripe. We do not store your card details on our servers.</li>
+      </ul>
+
+      <h3>How We Use Your Information</h3>
+      <ul>
+        <li>To fulfill and print your postcard order.</li>
+        <li>To send you a confirmation email and tracking ID.</li>
+        <li>To process your payment via Stripe.</li>
+        <li>To communicate with you about your order if an issue arises.</li>
+      </ul>
+
+      <h3>Third Parties We Share Data With</h3>
+      <div class="highlight-box">
+        <strong>PostGrid</strong> — Our printing and mailing partner. Your photo, message, and recipient address are transmitted to PostGrid to fulfill your order. PostGrid is a Canadian company subject to PIPEDA.<br /><br />
+        <strong>Stripe</strong> — Our payment processor. Your payment information is handled exclusively by Stripe and subject to <a href="https://stripe.com/en-ca/privacy" target="_blank" rel="noopener" style="color:var(--brown);">Stripe's Privacy Policy</a>.<br /><br />
+        We do <strong>not</strong> sell your personal information to any third party, and we do not use it for advertising.
+      </div>
+
+      <h3>Data Retention</h3>
+      <p>Order data (including photos and messages) is retained for up to 30 days after fulfillment, then permanently deleted from our systems. Payment records are retained as required by applicable law.</p>
+
+      <h3>Your Rights</h3>
+      <p>Under PIPEDA, you have the right to access, correct, or request deletion of your personal information. Contact us at <a href="mailto:hello@postcardlab.ca" style="color:var(--brown);">hello@postcardlab.ca</a> to exercise these rights.</p>
+    </div>
+
+    <!-- TERMS OF SERVICE -->
+    <div class="section-card" id="tos">
+      <span class="badge">Terms of Service</span>
+      <h2>Terms of Service</h2>
+
+      <p>By using Postcard Lab, you agree to the following terms:</p>
+
+      <h3>Photo Rights</h3>
+      <p>By uploading a photo, you confirm that you own the rights to that image, or have been explicitly granted permission to use it for print. You may not upload photos that you do not have rights to reproduce.</p>
+
+      <h3>Acceptable Use</h3>
+      <p>You agree not to use our service to send:</p>
+      <ul>
+        <li>Illegal, threatening, abusive, or harassing content.</li>
+        <li>Content that violates any third party's intellectual property rights.</li>
+        <li>Spam, unsolicited commercial messages, or bulk mailings.</li>
+        <li>Content that is obscene, defamatory, or harmful to minors.</li>
+        <li>Anything that violates applicable Canadian or international law.</li>
+      </ul>
+
+      <p>We reserve the right to refuse or cancel any order that, in our sole judgment, violates these terms — including after payment has been received, in which case a full refund will be issued.</p>
+
+      <h3>Service Availability</h3>
+      <p>Postcard Lab is currently available for deliveries to <strong>Canadian addresses only</strong>. We use Canada Post for all deliveries.</p>
+
+      <h3>Changes to Terms</h3>
+      <p>We may update these terms from time to time. Continued use of the service after changes constitutes acceptance of the updated terms.</p>
+    </div>
+
+    <!-- PRICING -->
+    <div class="section-card" id="pricing">
+      <span class="badge">Pricing</span>
+      <h2>Pricing &amp; Postage</h2>
+
+      <div class="highlight-box" style="font-size:1rem;">
+        <strong>$3.00 CAD per postcard</strong><br />
+        This flat rate includes printing, materials, and Canadian postage via Canada Post. There are no hidden fees or additional charges.
+      </div>
+
+      <p>All prices are in Canadian dollars (CAD) and include applicable taxes where required. Payments are processed securely via Stripe.</p>
+    </div>
+
+    <!-- DELIVERY -->
+    <div class="section-card" id="delivery">
+      <span class="badge">Delivery</span>
+      <h2>Delivery</h2>
+
+      <h3>Estimated Delivery Times</h3>
+      <div class="highlight-box">
+        <strong>Typically 5–10 business days</strong> via Canada Post, depending on your location within Canada.
+      </div>
+
+      <h3>Delivery Area</h3>
+      <p>We currently deliver to addresses within <strong>Canada only</strong>, including all 13 provinces and territories. International delivery is not available at this time.</p>
+
+      <h3>Carrier Delays</h3>
+      <p>Postcard Lab is not responsible for delays caused by Canada Post or other factors outside our control, including (but not limited to) extreme weather, postal strikes, statutory holidays, or incorrect address information provided by the customer.</p>
+
+      <h3>Lost Mail</h3>
+      <p>In the event your postcard does not arrive within 14 business days, please contact us and we will investigate with Canada Post on your behalf. We are not liable for mail lost by the carrier after it has been handed over for delivery.</p>
+
+      <h3>Address Errors</h3>
+      <p>You are responsible for ensuring the recipient's address is accurate. We cannot reroute or replace postcards sent to an incorrect address due to customer error, though we will do our best to assist where possible.</p>
+    </div>
+
+    <!-- REFUNDS -->
+    <div class="section-card" id="refunds">
+      <span class="badge">Refunds</span>
+      <h2>Refunds &amp; Cancellations</h2>
+
+      <h3>All Sales Final</h3>
+      <p>Once your order has been sent to print (typically within 1 business day of placing your order), it cannot be cancelled or refunded, as production begins immediately.</p>
+
+      <h3>When We Will Issue a Refund</h3>
+      <p>We will issue a full refund in the following circumstances:</p>
+      <ul>
+        <li><strong>Delivery failure</strong> — if your postcard has not been delivered within <strong>14 business days</strong> of the mailing date and we are unable to locate it via Canada Post.</li>
+        <li><strong>Printing error</strong> — if we made a verifiable error in printing your postcard (e.g., wrong photo, wrong message, or significant print quality defect that is clearly our fault).</li>
+      </ul>
+
+      <p>To request a refund, email <a href="mailto:hello@postcardlab.ca" style="color:var(--brown);">hello@postcardlab.ca</a> with your order tracking ID and a description of the issue. We aim to respond within 2 business days.</p>
+
+      <div class="highlight-box">
+        We are <strong>not responsible</strong> for carrier delays, lost mail after handover to Canada Post, or address errors made by the customer.
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="contact-block" id="contact">
+      <h2>Questions or Concerns?</h2>
+      <p>We're happy to help. Reach out and we'll get back to you within 2 business days.</p>
+      <a href="mailto:hello@postcardlab.ca">hello@postcardlab.ca</a>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>© 2026 Postcard Lab &nbsp;·&nbsp; <a href="/postcard-app/terms.html">Terms &amp; Privacy</a></p>
+  </footer>
+
+</body>
+</html>

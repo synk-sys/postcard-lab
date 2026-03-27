@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Postcard Lab — Send Postcards Anywhere in Canada</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f0e8;
+      --brown: #704214;
+      --brown-light: #8a5224;
+      --brown-dark: #4e2d0c;
+      --cream: #fdfaf4;
+      --text: #2c1a0e;
+      --text-muted: #7a6050;
+      --border: #d9cdb8;
+      --shadow: rgba(112, 66, 20, 0.12);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(245, 240, 232, 0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.3rem;
+      color: var(--brown);
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .btn-track {
+      background: var(--brown);
+      color: #fff;
+      text-decoration: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 999px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-track:hover { background: var(--brown-dark); transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      padding: 100px 2rem 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(2.5rem, 7vw, 5rem);
+      color: var(--brown);
+      line-height: 1.1;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero .tagline {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: var(--text-muted);
+      max-width: 640px;
+      margin: 0 auto 2.5rem;
+      font-weight: 400;
+      line-height: 1.65;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+    }
+
+    .btn-primary {
+      background: var(--brown);
+      color: #fff;
+      text-decoration: none;
+      padding: 0.9rem 2rem;
+      border-radius: 999px;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px var(--shadow);
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--brown-dark); transform: translateY(-2px); box-shadow: 0 8px 24px var(--shadow); }
+
+    .btn-faq {
+      color: var(--brown);
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 500;
+      border-bottom: 1px solid var(--brown);
+      padding-bottom: 1px;
+      transition: opacity 0.2s;
+    }
+    .btn-faq:hover { opacity: 0.7; }
+
+    /* ── CAROUSEL ── */
+    .carousel-wrapper {
+      width: 100%;
+      max-width: 860px;
+      margin: 0 auto 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .carousel-track {
+      display: flex;
+      gap: 1.5rem;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform;
+    }
+
+    .postcard-card {
+      flex: 0 0 240px;
+      height: 168px;
+      border-radius: 12px;
+      background: var(--cream);
+      border: 1.5px solid var(--border);
+      box-shadow: 0 4px 20px var(--shadow);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      transition: transform 0.3s;
+    }
+    .postcard-card:hover { transform: scale(1.03) rotate(-1deg); }
+
+    .postcard-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(135deg, rgba(112,66,20,0.06) 0%, transparent 60%);
+    }
+
+    .postcard-card .stamp {
+      position: absolute;
+      top: 10px; right: 10px;
+      width: 30px; height: 36px;
+      background: var(--brown);
+      border-radius: 3px;
+      opacity: 0.18;
+    }
+
+    .card-1 { background: linear-gradient(135deg, #ffe0b2, #ffcc80); }
+    .card-2 { background: linear-gradient(135deg, #c8e6c9, #a5d6a7); }
+    .card-3 { background: linear-gradient(135deg, #bbdefb, #90caf9); }
+    .card-4 { background: linear-gradient(135deg, #f8bbd9, #f48fb1); }
+
+    .carousel-dots {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .carousel-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      border: none;
+      padding: 0;
+    }
+    .carousel-dot.active { background: var(--brown); transform: scale(1.3); }
+
+    /* ── BOUNCE ARROW ── */
+    .bounce-arrow {
+      font-size: 1.75rem;
+      display: block;
+      animation: bounce 1.8s ease-in-out infinite;
+      color: var(--brown);
+      margin-top: 1rem;
+      text-decoration: none;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(10px); }
+    }
+
+    /* ── FAQ ── */
+    .faq-section {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 80px 2rem 80px;
+    }
+
+    .faq-section h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 2rem;
+      color: var(--brown);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .faq-question {
+      width: 100%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      padding: 1.25rem 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      font-family: 'Inter', sans-serif;
+      transition: color 0.2s;
+    }
+    .faq-question:hover { color: var(--brown); }
+
+    .faq-icon {
+      font-size: 1.25rem;
+      color: var(--brown);
+      flex-shrink: 0;
+      transition: transform 0.3s;
+      line-height: 1;
+    }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+
+    .faq-answer {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.35s ease, padding 0.35s ease;
+    }
+    .faq-item.open .faq-answer { max-height: 200px; }
+
+    .faq-answer p {
+      padding-bottom: 1.25rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    footer a { color: var(--brown); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 500px) {
+      header { padding: 0 1rem; }
+      .hero { padding: 90px 1rem 60px; }
+      .faq-section { padding: 60px 1rem; }
+      .btn-primary { padding: 0.8rem 1.5rem; font-size: 0.95rem; }
+      .postcard-card { flex: 0 0 200px; height: 140px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <a href="/postcard-app/index.html" class="logo">Postcard Lab 💌</a>
+    <a href="/postcard-app/track.html" class="btn-track">Track Postcard</a>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <h1>Postcard Lab 💌</h1>
+    <p class="tagline">Send a postcard as easily as you'd send a text. Pick your photo, write your message. We'll handle the printing &amp; mailing — anywhere in Canada!</p>
+
+    <!-- Carousel -->
+    <div class="carousel-wrapper" role="region" aria-label="Postcard examples">
+      <div class="carousel-track" id="carouselTrack">
+        <div class="postcard-card card-1" role="img" aria-label="Summer postcard example">
+          <span>🌅</span>
+          <div class="stamp"></div>
+        </div>
+        <div class="postcard-card card-2" role="img" aria-label="Nature postcard example">
+          <span>🍁</span>
+          <div class="stamp"></div>
+        </div>
+        <div class="postcard-card card-3" role="img" aria-label="Winter postcard example">
+          <span>🏔️</span>
+          <div class="stamp"></div>
+        </div>
+        <div class="postcard-card card-4" role="img" aria-label="Floral postcard example">
+          <span>🌸</span>
+          <div class="stamp"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="carousel-dots" id="carouselDots" role="tablist" aria-label="Carousel controls">
+      <button class="carousel-dot active" role="tab" aria-selected="true" aria-label="Slide 1"></button>
+      <button class="carousel-dot" role="tab" aria-selected="false" aria-label="Slide 2"></button>
+      <button class="carousel-dot" role="tab" aria-selected="false" aria-label="Slide 3"></button>
+    </div>
+
+    <div class="hero-cta" style="margin-top:2rem;">
+      <a href="/postcard-app/app.html" class="btn-primary">Send a Postcard →</a>
+      <a href="#faq" class="btn-faq">FAQ ↓</a>
+    </div>
+
+    <a href="#faq" class="bounce-arrow" aria-label="Scroll to FAQ">↓</a>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq-section" id="faq">
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false">
+        Where do you deliver?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-answer" role="region">
+        <p>We currently deliver to addresses across Canada via Canada Post.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false">
+        How do I track my postcard?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-answer" role="region">
+        <p>After placing your order, you'll receive a confirmation email with a tracking ID. Enter it at the <a href="/postcard-app/track.html" style="color:var(--brown);">Track page</a> to check status.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false">
+        How much does it cost?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-answer" role="region">
+        <p>$3 CAD per postcard — that covers printing and Canadian postage.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false">
+        How long does delivery take?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-answer" role="region">
+        <p>Typically 5–10 business days via Canada Post.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 Postcard Lab &nbsp;·&nbsp; <a href="/postcard-app/terms.html">Terms &amp; Privacy</a></p>
+  </footer>
+
+  <script>
+    // ── FAQ Accordion ──
+    document.querySelectorAll('.faq-question').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(i => {
+          i.classList.remove('open');
+          i.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+        });
+        if (!isOpen) {
+          item.classList.add('open');
+          btn.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+
+    // ── Carousel ──
+    (function () {
+      const track = document.getElementById('carouselTrack');
+      const dots = document.querySelectorAll('.carousel-dot');
+      const cards = track.querySelectorAll('.postcard-card');
+      let current = 0;
+      let autoTimer;
+
+      function getCardWidth() {
+        const card = cards[0];
+        const style = getComputedStyle(track);
+        const gap = parseFloat(style.gap) || 24;
+        return card.offsetWidth + gap;
+      }
+
+      function goTo(index) {
+        current = (index + cards.length) % cards.length;
+        const offset = current * getCardWidth();
+        track.style.transform = `translateX(-${offset}px)`;
+        dots.forEach((d, i) => {
+          d.classList.toggle('active', i === current % dots.length);
+          d.setAttribute('aria-selected', i === current % dots.length ? 'true' : 'false');
+        });
+      }
+
+      dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => { goTo(i); resetAuto(); });
+      });
+
+      function resetAuto() {
+        clearInterval(autoTimer);
+        autoTimer = setInterval(() => goTo(current + 1), 2800);
+      }
+
+      // Touch / drag support
+      let startX = 0;
+      track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+      track.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - startX;
+        if (Math.abs(dx) > 40) { goTo(current + (dx < 0 ? 1 : -1)); resetAuto(); }
+      }, { passive: true });
+
+      resetAuto();
+    })();
+  </script>
+</body>
+</html>
