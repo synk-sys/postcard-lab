@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Postcard Lab</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --brown: #704214;
+      --brown-light: #8b5320;
+      --brown-bg: #f5f0e8;
+      --brown-hover: #f5f0e8;
+      --cream: #fdfaf4;
+      --content-bg: #f0ebe1;
+      --white: #ffffff;
+      --sidebar-w: 240px;
+      --border: #e8e2d9;
+      --text: #1a1a1a;
+      --text-muted: #6b6259;
+      --green: #2e7d32;
+      --green-bg: #e8f5e9;
+      --blue: #1565c0;
+      --blue-bg: #e3f2fd;
+      --red: #c62828;
+      --red-bg: #ffebee;
+      --yellow: #e65100;
+      --yellow-bg: #fff3e0;
+      --shadow: 0 1px 4px rgba(0,0,0,0.07), 0 2px 12px rgba(0,0,0,0.05);
+      --radius: 10px;
+      --transition: all 0.18s ease;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--content-bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: var(--white);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+      transition: transform 0.25s ease;
+    }
+
+    .sidebar-logo {
+      padding: 22px 20px 18px;
+      border-bottom: 1px solid var(--border);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--brown);
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 12px 0;
+      overflow-y: auto;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 18px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      border-left: 3px solid transparent;
+      transition: var(--transition);
+      user-select: none;
+      text-decoration: none;
+    }
+
+    .nav-item:hover {
+      background: var(--brown-hover);
+      color: var(--text);
+    }
+
+    .nav-item.active {
+      border-left-color: var(--brown);
+      color: var(--brown);
+      background: #faf0e6;
+      font-weight: 600;
+    }
+
+    .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+
+    .sidebar-footer {
+      padding: 16px 18px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--brown-bg);
+      border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem;
+      color: var(--brown);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .sidebar-footer-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .sidebar-footer-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sidebar-footer-logout {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .sidebar-footer-logout:hover { color: var(--brown); text-decoration: underline; }
+
+    /* ── MOBILE HEADER ── */
+    .mobile-header {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 56px;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      z-index: 200;
+      align-items: center;
+      padding: 0 16px;
+      gap: 14px;
+    }
+
+    .hamburger {
+      background: none; border: none; cursor: pointer;
+      font-size: 1.3rem; padding: 4px; color: var(--brown);
+    }
+
+    .mobile-logo {
+      font-size: 1rem; font-weight: 700; color: var(--brown);
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 99;
+    }
+
+    /* ── MAIN ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 28px;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .topbar-left { display: flex; flex-direction: column; gap: 2px; }
+
+    .topbar-title {
+      font-size: 1.12rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .topbar-date {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .btn-primary {
+      background: var(--brown);
+      color: #fff;
+      border: none;
+      padding: 9px 18px;
+      border-radius: 7px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .btn-primary:hover { background: var(--brown-light); transform: translateY(-1px); }
+
+    /* ── PAGE CONTENT ── */
+    .page-content {
+      padding: 26px 28px 40px;
+      flex: 1;
+    }
+
+    /* ── STAT CARDS ── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .stat-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: var(--transition);
+      cursor: default;
+    }
+
+    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 18px rgba(0,0,0,0.1); }
+
+    .stat-icon { font-size: 1.5rem; margin-bottom: 2px; }
+
+    .stat-number {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .stat-trend {
+      font-size: 0.75rem;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    .trend-green { color: var(--green); }
+    .trend-blue { color: var(--blue); }
+    .trend-red { color: var(--red); }
+
+    /* ── ROW 2 ── */
+    .row2 {
+      display: grid;
+      grid-template-columns: 60fr 40fr;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 18px;
+    }
+
+    .chart-wrap { position: relative; height: 220px; }
+
+    /* ── ACTIVITY ── */
+    .activity-list { display: flex; flex-direction: column; gap: 0; }
+
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid #f2ede6;
+    }
+
+    .activity-item:last-child { border-bottom: none; }
+
+    .activity-icon { font-size: 1.1rem; margin-top: 1px; flex-shrink: 0; }
+
+    .activity-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .activity-desc {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .activity-time {
+      font-size: 0.73rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ── TABLE CARD ── */
+    .table-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+      margin-bottom: 22px;
+    }
+
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .table-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-input {
+      padding: 7px 13px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-family: inherit;
+      outline: none;
+      width: 190px;
+      background: var(--cream);
+      transition: var(--transition);
+    }
+
+    .search-input:focus { border-color: var(--brown); background: #fff; }
+
+    .filter-select {
+      padding: 7px 11px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-family: inherit;
+      background: var(--cream);
+      cursor: pointer;
+      outline: none;
+      color: var(--text-muted);
+    }
+
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 9px 12px;
+      font-size: 0.73rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 2px solid var(--border);
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #f5f0e8;
+      transition: background 0.12s;
+    }
+
+    tbody tr:hover { background: #faf6ee; }
+    tbody tr:last-child { border-bottom: none; }
+
+    tbody td {
+      padding: 11px 12px;
+      color: var(--text);
+      vertical-align: middle;
+    }
+
+    .td-id { font-family: monospace; font-size: 0.8rem; color: var(--text-muted); }
+    .td-name { font-weight: 500; }
+    .td-addr { color: var(--text-muted); font-size: 0.8rem; max-width: 200px; }
+
+    /* ── BADGES ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-green { background: var(--green-bg); color: var(--green); }
+    .badge-blue { background: var(--blue-bg); color: var(--blue); }
+    .badge-red { background: var(--red-bg); color: var(--red); }
+    .badge-yellow { background: var(--yellow-bg); color: var(--yellow); }
+
+    /* ── ACTION BUTTONS ── */
+    .btn-sm {
+      padding: 4px 11px;
+      border-radius: 5px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      background: var(--white);
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      transition: var(--transition);
+    }
+
+    .btn-sm:hover {
+      border-color: var(--brown);
+      color: var(--brown);
+      background: #faf0e6;
+    }
+
+    .actions-cell { display: flex; gap: 6px; align-items: center; }
+
+    .no-results {
+      text-align: center;
+      padding: 28px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* ── ROW 4 ── */
+    .row4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* ── PROVINCE BARS ── */
+    .province-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .province-row { display: flex; flex-direction: column; gap: 4px; }
+
+    .province-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .province-name { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+    .province-count { font-size: 0.78rem; color: var(--text-muted); }
+
+    .province-bar-bg {
+      height: 8px;
+      background: #f0ebe1;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .province-bar-fill {
+      height: 100%;
+      background: var(--brown);
+      border-radius: 4px;
+      transition: width 0.6s ease;
+    }
+
+    /* ── DOUGHNUT ── */
+    .doughnut-wrap { position: relative; height: 180px; display: flex; justify-content: center; }
+
+    .doughnut-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 14px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── COMING SOON ── */
+    .coming-soon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      padding: 26px 28px 40px;
+    }
+
+    .coming-soon-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 60px 48px;
+      text-align: center;
+      max-width: 420px;
+      width: 100%;
+    }
+
+    .coming-soon-icon { font-size: 2.5rem; margin-bottom: 14px; }
+    .coming-soon-title { font-size: 1.25rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .coming-soon-sub { font-size: 0.88rem; color: var(--text-muted); }
+
+    /* ── POSTCARDS PAGE ── */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      margin-top: 16px;
+    }
+
+    .page-btn {
+      min-width: 32px;
+      height: 32px;
+      padding: 0 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+
+    .page-btn:hover { border-color: var(--brown); color: var(--brown); background: #faf0e6; }
+    .page-btn.active { background: var(--brown); color: #fff; border-color: var(--brown); }
+    .page-btn.dots { border: none; background: none; cursor: default; }
+    .page-btn.dots:hover { color: var(--text-muted); background: none; border: none; }
+
+    .postcards-topbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 18px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1100px) {
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 900px) {
+      .row2 { grid-template-columns: 1fr; }
+      .row4 { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sidebar-overlay.open {
+        display: block;
+      }
+
+      .mobile-header {
+        display: flex;
+      }
+
+      .main {
+        margin-left: 0;
+        padding-top: 56px;
+      }
+
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+
+      .topbar { padding: 0 16px; }
+      .page-content { padding: 16px 14px 32px; }
+    }
+
+    @media (max-width: 480px) {
+      .stat-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── HIDDEN ── */
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<!-- Mobile Header -->
+<div class="mobile-header">
+  <button class="hamburger" id="hamburger" aria-label="Open menu">☰</button>
+  <span class="mobile-logo">📮 Postcard Lab</span>
+</div>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" id="overlay"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">📮 Postcard Lab</div>
+
+  <nav class="sidebar-nav">
+    <a class="nav-item active" data-page="dashboard" href="#">
+      <span class="nav-icon">📊</span> Dashboard
+    </a>
+    <a class="nav-item" data-page="postcards" href="#">
+      <span class="nav-icon">📬</span> Postcards
+    </a>
+    <a class="nav-item" data-page="contacts" href="#">
+      <span class="nav-icon">👥</span> Contacts
+    </a>
+    <a class="nav-item" data-page="templates" href="#">
+      <span class="nav-icon">📋</span> Templates
+    </a>
+    <a class="nav-item" data-page="apikeys" href="#">
+      <span class="nav-icon">🔑</span> API Keys
+    </a>
+    <a class="nav-item" data-page="settings" href="#">
+      <span class="nav-icon">⚙️</span> Settings
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="avatar">MK</div>
+    <div class="sidebar-footer-text">
+      <div class="sidebar-footer-name">My Account</div>
+      <a class="sidebar-footer-logout" href="#">Log out</a>
+    </div>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="main" id="main">
+
+  <!-- Top Bar -->
+  <div class="topbar" id="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title" id="page-title">Dashboard</div>
+      <div class="topbar-date">March 27, 2026</div>
+    </div>
+    <a class="btn-primary" href="app.html" id="topbar-btn">Send Postcard →</a>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       PAGE: DASHBOARD
+  ════════════════════════════════════════════ -->
+  <div id="page-dashboard" class="page-content">
+
+    <!-- Stat Cards -->
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📨</div>
+        <div class="stat-number">1,284</div>
+        <div class="stat-label">Total Sent</div>
+        <div class="stat-trend trend-green">↑ 12% this month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🚚</div>
+        <div class="stat-number">47</div>
+        <div class="stat-label">In Transit</div>
+        <div class="stat-trend trend-blue">Via Canada Post</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-number">1,201</div>
+        <div class="stat-label">Delivered</div>
+        <div class="stat-trend trend-green">93.5% delivery rate</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-number">36</div>
+        <div class="stat-label">Failed / Returned</div>
+        <div class="stat-trend trend-red">↓ 3 from last month</div>
+      </div>
+    </div>
+
+    <!-- Row 2: Chart + Activity -->
+    <div class="row2">
+      <div class="card">
+        <div class="card-title">Mail Volume — Last 30 Days</div>
+        <div class="chart-wrap">
+          <canvas id="mailVolumeChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Recent Activity</div>
+        <div class="activity-list">
+          <div class="activity-item">
+            <span class="activity-icon">📬</span>
+            <div class="activity-text">
+              <div class="activity-desc">Postcard to Sarah M. — delivered</div>
+              <div class="activity-time">2h ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <span class="activity-icon">📤</span>
+            <div class="activity-text">
+              <div class="activity-desc">Postcard to James L. — in transit</div>
+              <div class="activity-time">5h ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <span class="activity-icon">✅</span>
+            <div class="activity-text">
+              <div class="activity-desc">Postcard to Priya K. — delivered</div>
+              <div class="activity-time">1d ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <span class="activity-icon">⚠️</span>
+            <div class="activity-text">
+              <div class="activity-desc">Postcard to Tom R. — address issue</div>
+              <div class="activity-time">1d ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <span class="activity-icon">📬</span>
+            <div class="activity-text">
+              <div class="activity-desc">Postcard to Lisa C. — delivered</div>
+              <div class="activity-time">2d ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <span class="activity-icon">📤</span>
+            <div class="activity-text">
+              <div class="activity-desc">Postcard to Mark T. — in transit</div>
+              <div class="activity-time">2d ago</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Table -->
+    <div class="table-card">
+      <div class="table-header">
+        <div class="card-title" style="margin-bottom:0">Recent Postcards</div>
+        <div class="table-controls">
+          <input
+            class="search-input"
+            id="dashSearch"
+            type="text"
+            placeholder="Search by name or ID…"
+            oninput="filterTable('dashSearch','dashTable','dashNoResults')"
+          />
+          <select class="filter-select" onchange="filterByStatus(this,'dashTable','dashNoResults')">
+            <option value="">All Statuses</option>
+            <option value="Delivered">Delivered</option>
+            <option value="In Transit">In Transit</option>
+            <option value="Processing">Processing</option>
+            <option value="Failed">Failed</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Recipient</th>
+              <th>Address</th>
+              <th>Sent Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="dashTable">
+            <!-- rows injected by JS -->
+          </tbody>
+        </table>
+        <div class="no-results hidden" id="dashNoResults">No postcards match your search.</div>
+      </div>
+    </div>
+
+    <!-- Row 4: Provinces + Doughnut -->
+    <div class="row4">
+      <div class="card">
+        <div class="card-title">Top Provinces</div>
+        <div class="province-list" id="provinceList"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Delivery Performance</div>
+        <div class="doughnut-wrap">
+          <canvas id="deliveryChart"></canvas>
+        </div>
+        <div class="doughnut-legend">
+          <div class="legend-item">
+            <div class="legend-dot" style="background:#2e7d32"></div>
+            Delivered 93.5%
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:#1565c0"></div>
+            In Transit 3.7%
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:#c62828"></div>
+            Failed 2.8%
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /page-dashboard -->
+
+
+  <!-- ═══════════════════════════════════════════
+       PAGE: POSTCARDS
+  ════════════════════════════════════════════ -->
+  <div id="page-postcards" class="page-content hidden">
+    <div class="postcards-topbar">
+      <a class="btn-primary" href="app.html">+ New Postcard</a>
+    </div>
+    <div class="table-card" style="margin-bottom:0">
+      <div class="table-header">
+        <div class="card-title" style="margin-bottom:0">All Postcards</div>
+        <div class="table-controls">
+          <input
+            class="search-input"
+            id="pcSearch"
+            type="text"
+            placeholder="Search by name or ID…"
+            oninput="filterTable('pcSearch','pcTable','pcNoResults')"
+          />
+          <select class="filter-select" onchange="filterByStatus(this,'pcTable','pcNoResults')">
+            <option value="">All Statuses</option>
+            <option value="Delivered">Delivered</option>
+            <option value="In Transit">In Transit</option>
+            <option value="Processing">Processing</option>
+            <option value="Failed">Failed</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Recipient</th>
+              <th>Address</th>
+              <th>Sent Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="pcTable"></tbody>
+        </table>
+        <div class="no-results hidden" id="pcNoResults">No postcards match your search.</div>
+      </div>
+      <div class="pagination">
+        <button class="page-btn">← Prev</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn dots">…</button>
+        <button class="page-btn">8</button>
+        <button class="page-btn">Next →</button>
+      </div>
+    </div>
+  </div><!-- /page-postcards -->
+
+
+  <!-- ═══════════════════════════════════════════
+       COMING SOON PAGES
+  ════════════════════════════════════════════ -->
+  <div id="page-contacts" class="coming-soon hidden">
+    <div class="coming-soon-card">
+      <div class="coming-soon-icon">🚧</div>
+      <div class="coming-soon-title">Contacts — Coming Soon</div>
+      <div class="coming-soon-sub">Manage your recipients and address book here. This feature is in development.</div>
+    </div>
+  </div>
+
+  <div id="page-templates" class="coming-soon hidden">
+    <div class="coming-soon-card">
+      <div class="coming-soon-icon">🚧</div>
+      <div class="coming-soon-title">Templates — Coming Soon</div>
+      <div class="coming-soon-sub">Create and manage reusable postcard templates. This feature is in development.</div>
+    </div>
+  </div>
+
+  <div id="page-apikeys" class="coming-soon hidden">
+    <div class="coming-soon-card">
+      <div class="coming-soon-icon">🚧</div>
+      <div class="coming-soon-title">API Keys — Coming Soon</div>
+      <div class="coming-soon-sub">Generate and manage your API keys for programmatic access. This feature is in development.</div>
+    </div>
+  </div>
+
+  <div id="page-settings" class="coming-soon hidden">
+    <div class="coming-soon-card">
+      <div class="coming-soon-icon">🚧</div>
+      <div class="coming-soon-title">Settings — Coming Soon</div>
+      <div class="coming-soon-sub">Configure your account, billing, and notification preferences. This feature is in development.</div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+/* ────────────────────────────────────────────────────────────────
+   DATA
+──────────────────────────────────────────────────────────────── */
+const postcards = [
+  { id:'PC-001842', name:'Sarah Mitchell',  addr:'123 Maple Ave, Toronto ON M5V 2T6',            date:'Mar 25, 2026', status:'Delivered'  },
+  { id:'PC-001841', name:'James Leblanc',   addr:'88 Rue St-Denis, Montréal QC H2X 3K7',         date:'Mar 24, 2026', status:'In Transit' },
+  { id:'PC-001840', name:'Priya Kapoor',    addr:'45 Douglas St, Victoria BC V8V 2P3',            date:'Mar 23, 2026', status:'Delivered'  },
+  { id:'PC-001839', name:'Tom Reynolds',    addr:'210 Portage Ave, Winnipeg MB R3B 2A6',          date:'Mar 22, 2026', status:'Failed'     },
+  { id:'PC-001838', name:'Lisa Chen',       addr:'67 Barrington St, Halifax NS B3J 1S7',          date:'Mar 21, 2026', status:'Delivered'  },
+  { id:'PC-001837', name:'Mark Thompson',   addr:'1020 Broad St, Regina SK S4P 1Y3',              date:'Mar 20, 2026', status:'In Transit' },
+  { id:'PC-001836', name:'Aisha Diallo',    addr:'300 Sparks St, Ottawa ON K1P 5A9',              date:'Mar 19, 2026', status:'Delivered'  },
+  { id:'PC-001835', name:'Noah Tremblay',   addr:"555 Ave des Érables, Québec QC G1R 2J5",        date:'Mar 18, 2026', status:'Processing' },
+  { id:'PC-001834', name:'Emma Wilson',     addr:'900 Broadway Ave, Saskatoon SK S7N 1B6',        date:'Mar 17, 2026', status:'Delivered'  },
+  { id:'PC-001833', name:"Liam O'Brien",    addr:"14 Atlantic Ave, St. John's NL A1C 5X9",        date:'Mar 16, 2026', status:'In Transit' },
+];
+
+const statusBadge = {
+  'Delivered':  'badge-green',
+  'In Transit': 'badge-blue',
+  'Processing': 'badge-yellow',
+  'Failed':     'badge-red',
+};
+
+function buildRows(data, tbodyId) {
+  const tbody = document.getElementById(tbodyId);
+  tbody.innerHTML = '';
+  data.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.dataset.id = r.id.toLowerCase();
+    tr.dataset.name = r.name.toLowerCase();
+    tr.dataset.status = r.status;
+    tr.innerHTML = `
+      <td class="td-id">${r.id}</td>
+      <td class="td-name">${r.name}</td>
+      <td class="td-addr">${r.addr}</td>
+      <td>${r.date}</td>
+      <td><span class="badge ${statusBadge[r.status]}">${r.status}</span></td>
+      <td>
+        <div class="actions-cell">
+          <button class="btn-sm" onclick="alert('View: ${r.id}')">View</button>
+          <a class="btn-sm" href="track.html?id=${r.id}">Track</a>
+        </div>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+/* ────────────────────────────────────────────────────────────────
+   SEARCH / FILTER
+──────────────────────────────────────────────────────────────── */
+function filterTable(inputId, tbodyId, noResultsId) {
+  const q = document.getElementById(inputId).value.toLowerCase().trim();
+  applyFilters(tbodyId, noResultsId, q, '');
+}
+
+function filterByStatus(sel, tbodyId, noResultsId) {
+  const status = sel.value;
+  const siblingInput = tbodyId === 'dashTable' ? 'dashSearch' : 'pcSearch';
+  const q = document.getElementById(siblingInput).value.toLowerCase().trim();
+  applyFilters(tbodyId, noResultsId, q, status);
+}
+
+function applyFilters(tbodyId, noResultsId, q, status) {
+  const rows = document.querySelectorAll('#' + tbodyId + ' tr');
+  let visible = 0;
+  rows.forEach(row => {
+    const matchQ = !q || row.dataset.id.includes(q) || row.dataset.name.includes(q);
+    const matchS = !status || row.dataset.status === status;
+    const show = matchQ && matchS;
+    row.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  document.getElementById(noResultsId).classList.toggle('hidden', visible > 0);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   NAVIGATION
+──────────────────────────────────────────────────────────────── */
+const pages = ['dashboard','postcards','contacts','templates','apikeys','settings'];
+const pageTitles = {
+  dashboard:  'Dashboard',
+  postcards:  'Postcards',
+  contacts:   'Contacts',
+  templates:  'Templates',
+  apikeys:    'API Keys',
+  settings:   'Settings',
+};
+
+const pageBtnLabels = {
+  dashboard: 'Send Postcard →',
+  postcards: 'New Postcard →',
+};
+
+function showPage(name) {
+  pages.forEach(p => {
+    document.getElementById('page-' + p).classList.toggle('hidden', p !== name);
+  });
+
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.page === name);
+  });
+
+  document.getElementById('page-title').textContent = pageTitles[name] || name;
+
+  const btn = document.getElementById('topbar-btn');
+  if (pageBtnLabels[name]) {
+    btn.textContent = pageBtnLabels[name];
+    btn.style.display = '';
+  } else {
+    btn.style.display = 'none';
+  }
+
+  closeSidebar();
+}
+
+document.querySelectorAll('.nav-item').forEach(el => {
+  el.addEventListener('click', e => {
+    e.preventDefault();
+    showPage(el.dataset.page);
+  });
+});
+
+/* ────────────────────────────────────────────────────────────────
+   MOBILE SIDEBAR
+──────────────────────────────────────────────────────────────── */
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+const hamburger = document.getElementById('hamburger');
+
+hamburger.addEventListener('click', () => {
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('open');
+});
+
+overlay.addEventListener('click', closeSidebar);
+
+function closeSidebar() {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('open');
+}
+
+/* ────────────────────────────────────────────────────────────────
+   CHART.JS — Mail Volume
+──────────────────────────────────────────────────────────────── */
+function genDays(n) {
+  const labels = [], data = [];
+  const now = new Date('2026-03-27');
+  for (let i = n - 1; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    labels.push(d.toLocaleDateString('en-CA', { month:'short', day:'numeric' }));
+    data.push(Math.floor(Math.random() * 71) + 10);
+  }
+  return { labels, data };
+}
+
+const { labels: volLabels, data: volData } = genDays(30);
+
+new Chart(document.getElementById('mailVolumeChart'), {
+  type: 'bar',
+  data: {
+    labels: volLabels,
+    datasets: [{
+      label: 'Postcards',
+      data: volData,
+      backgroundColor: 'rgba(112,66,20,0.75)',
+      borderRadius: 4,
+      hoverBackgroundColor: 'rgba(112,66,20,1)',
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ${ctx.parsed.y} postcards`
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: {
+          maxTicksLimit: 8,
+          font: { size: 10, family: 'Inter' },
+          color: '#9e9189'
+        }
+      },
+      y: {
+        grid: { color: '#f0ebe1', lineWidth: 1 },
+        ticks: {
+          font: { size: 10, family: 'Inter' },
+          color: '#9e9189'
+        },
+        beginAtZero: true,
+      }
+    }
+  }
+});
+
+/* ────────────────────────────────────────────────────────────────
+   CHART.JS — Delivery Doughnut
+──────────────────────────────────────────────────────────────── */
+new Chart(document.getElementById('deliveryChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Delivered', 'In Transit', 'Failed'],
+    datasets: [{
+      data: [93.5, 3.7, 2.8],
+      backgroundColor: ['#2e7d32','#1565c0','#c62828'],
+      borderWidth: 0,
+      hoverOffset: 6,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '68%',
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ${ctx.label}: ${ctx.parsed}%`
+        }
+      }
+    }
+  }
+});
+
+/* ────────────────────────────────────────────────────────────────
+   PROVINCE BARS
+──────────────────────────────────────────────────────────────── */
+const provinces = [
+  { name:'ON', count:412 },
+  { name:'QC', count:298 },
+  { name:'BC', count:187 },
+  { name:'AB', count:143 },
+  { name:'NS', count:89  },
+  { name:'MB', count:76  },
+  { name:'Others', count:79 },
+];
+
+const maxProv = Math.max(...provinces.map(p => p.count));
+const list = document.getElementById('provinceList');
+
+provinces.forEach(p => {
+  const pct = ((p.count / maxProv) * 100).toFixed(1);
+  const row = document.createElement('div');
+  row.className = 'province-row';
+  row.innerHTML = `
+    <div class="province-meta">
+      <span class="province-name">${p.name}</span>
+      <span class="province-count">${p.count.toLocaleString()}</span>
+    </div>
+    <div class="province-bar-bg">
+      <div class="province-bar-fill" style="width:${pct}%"></div>
+    </div>`;
+  list.appendChild(row);
+});
+
+/* ────────────────────────────────────────────────────────────────
+   POPULATE TABLES
+──────────────────────────────────────────────────────────────── */
+buildRows(postcards, 'dashTable');
+buildRows(postcards, 'pcTable');
+</script>
+</body>
+</html>
