@@ -71,15 +71,14 @@
     /* ── LAYOUT ── */
     .app-wrapper {
       padding-top: 80px;
-      display: grid;
-      grid-template-columns: 1fr 340px;
+      display: flex;
+      flex-direction: column;
       gap: 2rem;
-      max-width: 1100px;
+      max-width: 720px;
       margin: 0 auto;
       padding-left: 2rem;
       padding-right: 2rem;
       padding-bottom: 4rem;
-      align-items: start;
     }
 
     /* ── STEP INDICATOR ── */
@@ -364,8 +363,7 @@
 
     /* ── PREVIEW PANEL ── */
     .preview-panel {
-      position: sticky;
-      top: 80px;
+      position: static;
     }
 
     .preview-label {
@@ -609,11 +607,9 @@
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       .app-wrapper {
-        grid-template-columns: 1fr;
         padding-left: 1rem;
         padding-right: 1rem;
       }
-      .preview-panel { position: static; order: -1; }
       .field-row { grid-template-columns: 1fr; }
     }
 
